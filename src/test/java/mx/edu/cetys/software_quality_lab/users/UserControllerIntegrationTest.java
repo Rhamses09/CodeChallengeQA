@@ -99,9 +99,20 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn400WhenPhoneIsInvalid() throws Exception {
-        // TODO: body con phone = "123" (menos de 10 dígitos)
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rham",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
