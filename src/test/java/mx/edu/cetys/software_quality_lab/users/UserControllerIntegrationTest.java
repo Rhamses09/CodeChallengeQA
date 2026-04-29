@@ -81,9 +81,20 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn400WhenAgeIsExactlyTwelve() throws Exception {
-        // TODO: body con age = 12 (caso límite — debe ser mayor a 12)
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rham",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 12,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
