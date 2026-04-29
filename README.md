@@ -47,5 +47,5 @@
 
 | Métrica | Resultado |
 |---|---|
-| Line coverage | <!-- ej. 88% --> |
-| Branch coverage | <!-- ej. 85% --> |
+| Line coverage | 88% |
+| Branch coverage | 100% |
