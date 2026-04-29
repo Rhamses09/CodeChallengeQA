@@ -186,8 +186,11 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn400WhenSuspendingAlreadySuspendedUser() throws Exception {
-        // TODO: guardar un usuario con status SUSPENDED via repository
-        // TODO: realizar PATCH /users/{id}/suspend
-        // TODO: andExpect status 400
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+        var id = user.getId();
+        user.setStatus(UserStatus.SUSPENDED);
+
+        mockMvc.perform(get("/users/"+id.toString()+"/suspend"))
+                .andExpect(status().isBadRequest());
     }
 }
