@@ -40,21 +40,21 @@ public class UserService {
         log.info("Iniciando registro de usuario, username={}", request.username());
         // TODO: implementar las reglas 1-7, luego guardar en BD y mapear la respuesta
         // Checar si esta mal el username con todas las reglas
-        if (request.username() == null || request.username().isBlank() || request.username().length() > 20 || request.username().length() < 5 || !request.username().matches("^[a-zA-Z0-9_]$") || request.username().startsWith("_") || request.username().endsWith("_")) {
+        if (request.username() == null || request.username().isBlank() || request.username().length() > 20 || request.username().length() < 5 || !request.username().matches("^[a-z0-9_]+$") || request.username().startsWith("_") || request.username().endsWith("_")) {
             throw new InvalidUserDataException("El nombre del usuario no es valido");
         }
 
         // checar si el firstName esta entre 2 a 50 caracteres y con restricciones validas
-        if (request.firstName() == null || request.firstName().isBlank() || request.firstName().length() > 50 || request.firstName().length() < 2 || !request.firstName().matches("^[a-zA-Záéíóúñ]")){
+        if (request.firstName() == null || request.firstName().isBlank() || request.firstName().length() > 50 || request.firstName().length() < 2 || !request.firstName().matches("^[a-zA-Záéíóúñ]+$")){
             throw new InvalidUserDataException("El primer nombre no es valido");
         }
         // Lo mismo pero con el lastName
-        if (request.lastName() == null || request.lastName().isBlank() || request.lastName().length() > 50 || request.lastName().length() < 2 || !request.lastName().matches("^[a-zA-Záéíóúñ]")){
+        if (request.lastName() == null || request.lastName().isBlank() || request.lastName().length() > 50 || request.lastName().length() < 2 || !request.lastName().matches("^[a-zA-Záéíóúñ]+$")){
             throw new InvalidUserDataException("El ultimo nombre no es valido");
         }
 
         // checar si la edad es mayor a 12 o igual o menor a 120
-        if (request.age() < 12 || request.age() > 120){
+        if (request.age() <= 12 || request.age() > 120){
             throw new InvalidUserDataException("La edad valida es solo entre 12 a 120");
         }
 
@@ -105,13 +105,16 @@ public class UserService {
      * Lanzar InvalidUserDataException si el usuario ya está SUSPENDED.
      */
     UserController.UserResponse suspendUser(Long id) {
-        log.info("Suspendiendo usuario, id={}", id);
-        // TODO: buscar usuario, validar status, cambiar a SUSPENDED, guardar, mapear y regresar
+        log.info("Suspendiendo usuario, id={}", id);// TODO: buscar usuario, validar status, cambiar a SUSPENDED, guardar, mapear y regresar
 
         var userFromDB = userRepository.findById(id);
 
         if (userFromDB.isEmpty()) {
             throw new UserNotFoundException("User con id " + id + " no se ha encontrado");
+        }
+
+        if (userFromDB.get().getStatus() == UserStatus.SUSPENDED) {
+            throw new InvalidUserDataException("User is already suspended");
         }
 
         var user = userFromDB.get();

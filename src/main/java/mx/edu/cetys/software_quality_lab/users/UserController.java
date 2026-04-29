@@ -31,7 +31,7 @@ public class UserController {
     // GET /users/{id} — obtener un usuario por ID
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK) // HTTP 200: solicitud exitosa
-    ApiResponse<UserWrapper> getUserById(@PathVariable Long id) {
+    ApiResponse<UserWrapper> getUserById(@PathVariable Long id) { 
 
         var user = userService.getUserById(id);
         return new ApiResponse<>("User encontrado", new UserController.UserWrapper(user), null);
