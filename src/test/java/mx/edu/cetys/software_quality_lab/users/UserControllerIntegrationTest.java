@@ -166,8 +166,9 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn404WhenUserNotFound() throws Exception {
-        // TODO: realizar GET /users/9999 (id inexistente)
-        // TODO: andExpect status 404
+        mockMvc.perform(get("/users/9999"))
+                .andExpect(status().isNotFound())                                   // HTTP 404
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     // ─── PATCH /users/{id}/suspend ────────────────────────────────────────────
