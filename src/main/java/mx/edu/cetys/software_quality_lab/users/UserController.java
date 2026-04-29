@@ -1,6 +1,7 @@
 package mx.edu.cetys.software_quality_lab.users;
 
 import mx.edu.cetys.software_quality_lab.commons.ApiResponse;
+import mx.edu.cetys.software_quality_lab.pets.PetController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,8 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // HTTP 201: recurso creado exitosamente
     ApiResponse<UserWrapper> registerUser(@RequestBody UserRequest request) {
-        // TODO: llamar a userService.registerUser, envolver en ApiResponse y regresar
-        throw new UnsupportedOperationException("TODO: implementar endpoint registerUser");
+        var savedUser = userService.registerUser(request);
+        return new ApiResponse<>("User creado exitosamente", new UserController.UserWrapper(savedUser), null);
     }
 
     // GET /users/{id} — obtener un usuario por ID
