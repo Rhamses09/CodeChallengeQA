@@ -33,9 +33,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK) // HTTP 200: solicitud exitosa
     ApiResponse<UserWrapper> getUserById(@PathVariable Long id) {
 
-        var savedUser = userService.getUserById(id);
-
-        throw new UnsupportedOperationException("TODO: implementar endpoint getUserById");
+        var user = userService.getUserById(id);
+        return new ApiResponse<>("User encontrado", new UserController.UserWrapper(user), null);
     }
 
     // PATCH /users/{id}/suspend — suspender un usuario activo
