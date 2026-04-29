@@ -2,23 +2,23 @@
 
 ## Equipo
 
-**Nombre del equipo:** <!-- Nombre de su equipo -->
+**Nombre del equipo:** Miau Miaus
 
 | Nombre completo | Matrícula |
 |---|---|
-| Estudiante 1 | 000000 |
-| Estudiante 2 | 000000 |
+| Estudiante 1 | 12705 |
+| Estudiante 2 | 12882 |
 | Estudiante 3 | 000000 |
 
 ---
 
 ## Entrega
 
-**Fecha:** <!-- Fecha de entrega -->
+**Fecha:** 28 abril 2026
 
-**Modalidad:** <!-- ZIP / GitHub -->
+**Modalidad:** GitHub
 
-**Link del repositorio (si aplica):** <!-- https://github.com/... -->
+**Link del repositorio (si aplica):** https://github.com/Rhamses09/CodeChallengeQA
 
 ---
 
@@ -32,8 +32,8 @@
 
 | Métrica | Resultado |
 |---|---|
-| Line coverage | <!-- ej. 91% --> |
-| Branch coverage | <!-- ej. 87% --> |
+| Line coverage | 81 |
+| Branch coverage | 85 |
 
 ---
 
