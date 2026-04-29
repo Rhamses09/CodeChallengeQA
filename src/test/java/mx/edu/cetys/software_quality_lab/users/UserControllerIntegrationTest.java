@@ -34,12 +34,13 @@ public class UserControllerIntegrationTest {
         // El email sigue el formato del EmailValidatorService: usuario#proveedor.dominio
         String body = """
                 {
-                    "username": "juan4_dev",
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "phone": "6641234567",
-                    "email": "juan4#gmail.com",
-                    "age": 25
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
                 }""";
 
         mockMvc.perform(
@@ -62,9 +63,20 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn400WhenUsernameIsTooShort() throws Exception {
-        // TODO: body con username de 4 caracteres
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rham",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
