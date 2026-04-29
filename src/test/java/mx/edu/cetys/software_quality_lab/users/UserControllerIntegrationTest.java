@@ -1,5 +1,6 @@
 package mx.edu.cetys.software_quality_lab.users;
 
+import mx.edu.cetys.software_quality_lab.pets.Pet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class UserControllerIntegrationTest {
     @BeforeEach
     public void limpiarBD() {
         userRepository.deleteAll();
+    }
+
+    // Helper: guardar un user directo en BD para usarlo en pruebas de GET
+    private User guardarUserEnBD(String username, String firstName, String lastName, String phone, String email, Integer age) {
+        return userRepository.save(new User(username, firstName, lastName, phone, email, age));
+
     }
 
     // ─── POST /users ──────────────────────────────────────────────────────────
@@ -144,7 +151,18 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn200AndUserWhenFound() throws Exception {
-        }
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+
+        mockMvc.perform(get("/users/" + user.getId()))
+                .andExpect(status().isOk())                                         // HTTP 200
+                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
+                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
+                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
+                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
+                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
+                .andExpect(jsonPath("$.response.user.age").value(13))
+                .andExpect(jsonPath("$.response.user.id").value(user.getId()));
+    }
 
     @Test
     void shouldReturn404WhenUserNotFound() throws Exception {
