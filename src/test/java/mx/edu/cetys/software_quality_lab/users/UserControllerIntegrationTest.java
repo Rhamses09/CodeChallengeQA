@@ -83,7 +83,7 @@ public class UserControllerIntegrationTest {
     void shouldReturn400WhenAgeIsExactlyTwelve() throws Exception {
         String body = """
                 {
-                    "username": "rham",
+                    "username": "rhamses_noob67",
                     "firstName": "Rhamses",
                     "lastName": "Orozco",
                     "phone": "6464000031",
@@ -101,7 +101,7 @@ public class UserControllerIntegrationTest {
     void shouldReturn400WhenPhoneIsInvalid() throws Exception {
         String body = """
                 {
-                    "username": "rham",
+                    "username": "rhamses_noob67",
                     "firstName": "Rhamses",
                     "lastName": "Orozco",
                     "phone": "123456789",
@@ -119,7 +119,7 @@ public class UserControllerIntegrationTest {
     void shouldReturn400WhenEmailIsInvalid() throws Exception {
         String body = """
                 {
-                    "username": "rham",
+                    "username": "rhamses_noob67",
                     "firstName": "Rhamses",
                     "lastName": "Orozco",
                     "phone": "6464000031",
@@ -144,11 +144,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn200AndUserWhenFound() throws Exception {
-        // TODO: guardar un usuario via repository, obtener su id generado
-        // TODO: realizar GET /users/{id}
-        // TODO: andExpect status 200
-        // TODO: andExpect jsonPath campos coincidan con el usuario guardado
-    }
+        }
 
     @Test
     void shouldReturn404WhenUserNotFound() throws Exception {
