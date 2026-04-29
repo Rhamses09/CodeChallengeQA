@@ -105,8 +105,7 @@ public class UserService {
      * Lanzar InvalidUserDataException si el usuario ya está SUSPENDED.
      */
     UserController.UserResponse suspendUser(Long id) {
-        log.info("Suspendiendo usuario, id={}", id);
-        // TODO: buscar usuario, validar status, cambiar a SUSPENDED, guardar, mapear y regresar
+        log.info("Suspendiendo usuario, id={}", id);// TODO: buscar usuario, validar status, cambiar a SUSPENDED, guardar, mapear y regresar
 
         var userFromDB = userRepository.findById(id);
 
@@ -114,12 +113,11 @@ public class UserService {
             throw new UserNotFoundException("User con id " + id + " no se ha encontrado");
         }
 
-
+        if (userFromDB.get().getStatus() == UserStatus.SUSPENDED) {
+            throw new InvalidUserDataException("User is already suspended");
+        }
 
         var user = userFromDB.get();
-        if (user.getStatus() == UserStatus.SUSPENDED) {
-            throw new InvalidUserDataException("El usuario ya está suspendido");
-        }
         user.setStatus(UserStatus.SUSPENDED);
         var saved = userRepository.save(user);
 
