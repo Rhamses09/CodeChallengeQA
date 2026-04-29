@@ -11,7 +11,7 @@ public class UserController {
 
     // DTOs (Data Transfer Objects) — definen la forma del request y del response
     record UserRequest(String username, String firstName, String lastName, String phone, String email, Integer age) {}
-    record UserResponse(Long id, String username, String firstName, String lastName, String phone, String email, Integer age, String status) {}
+    record UserResponse(Long id, String username, String firstName, String lastName, String phone, String email, Integer age, UserStatus status) {}
     record UserWrapper(UserResponse user) {}
 
     private final UserService userService;
