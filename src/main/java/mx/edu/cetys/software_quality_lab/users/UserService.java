@@ -2,8 +2,8 @@ package mx.edu.cetys.software_quality_lab.users;
 
 import mx.edu.cetys.software_quality_lab.users.exceptions.InvalidUserDataException;
 import mx.edu.cetys.software_quality_lab.validators.EmailValidatorService;
-import mx.edu.cetys.software_quality_lab.validators.UserNotFoundException;
-import mx.edu.cetys.software_quality_lab.validators.DuplicateUsernameException;
+import mx.edu.cetys.software_quality_lab.users.exceptions.UserNotFoundException;
+import mx.edu.cetys.software_quality_lab.users.exceptions.DuplicateUsernameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -66,7 +66,7 @@ public class UserService {
             throw new InvalidUserDataException("El correo ingresado no es aceptado");
         }
         if (userRepository.existsByUsername(request.username())){
-            throw new DuplicateUserNameException("El nombre de usuario ya existe");
+            throw new DuplicateUsernameException("El nombre de usuario ya existe");
         }
 
         var newUser = userRepository.save(
