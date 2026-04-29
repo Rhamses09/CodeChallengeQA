@@ -142,9 +142,34 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldReturn409WhenUsernameIsDuplicated() throws Exception {
-        // TODO: guardar un usuario directamente via repository con el mismo username
-        // TODO: realizar segundo POST /users con el mismo username
-        // TODO: andExpect status 409
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+
+        String body = """
+                {
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(
+                        post("/users")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body)
+                )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.info").value("username ya existente"))
+                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
+                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
+                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
+                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
+                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
+                .andExpect(jsonPath("$.response.user.age").value(13))
+                .andExpect(jsonPath("$.response.user.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.error").isEmpty());
     }
 
     // ─── GET /users/{id} ─────────────────────────────────────────────────────
