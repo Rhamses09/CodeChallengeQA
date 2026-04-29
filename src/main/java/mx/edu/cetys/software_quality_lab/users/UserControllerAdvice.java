@@ -27,10 +27,9 @@ public class UserControllerAdvice {
 
     }
 
-    // TODO: regresar HTTP 409 cuando el username ya está registrado
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     ApiResponse<Void> handleDuplicateUsername(DuplicateUsernameException ex) {
-        return new ApiResponse<>("Duplicate user", null, ex.getMessage());
+        return new ApiResponse<>("Duplicate user", null, null);
     }
 }

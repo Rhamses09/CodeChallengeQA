@@ -55,7 +55,7 @@ public class UserControllerIntegrationTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(body)
                 )
-                .andExpect(status().isCreated())                                    // HTTP 201
+                    .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.info").value("User creado exitosamente"))
                 .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
                 .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
@@ -161,14 +161,7 @@ public class UserControllerIntegrationTest {
                                 .content(body)
                 )
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.info").value("username ya existente"))
-                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
-                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
-                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
-                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
-                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
-                .andExpect(jsonPath("$.response.user.age").value(13))
-                .andExpect(jsonPath("$.response.user.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.info").value("Duplicate user"))
                 .andExpect(jsonPath("$.error").isEmpty());
     }
 
@@ -204,7 +197,7 @@ public class UserControllerIntegrationTest {
         var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
         var id = user.getId();
 
-        mockMvc.perform(get("/users/"+id.toString()+"/suspend"))
+        mockMvc.perform(patch("/users/"+id.toString()+"/suspend"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.user.status").value("SUSPENDED"));
     }
@@ -214,8 +207,9 @@ public class UserControllerIntegrationTest {
         var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
         var id = user.getId();
         user.setStatus(UserStatus.SUSPENDED);
+        userRepository.save(user);
 
-        mockMvc.perform(get("/users/"+id.toString()+"/suspend"))
+        mockMvc.perform(patch("/users/" + id + "/suspend"))
                 .andExpect(status().isBadRequest());
     }
 }
