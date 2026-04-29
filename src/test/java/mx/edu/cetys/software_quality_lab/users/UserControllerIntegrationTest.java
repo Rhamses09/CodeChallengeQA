@@ -42,11 +42,22 @@ public class UserControllerIntegrationTest {
                     "age": 25
                 }""";
 
-        // TODO: realizar POST /users con el body anterior
-        // TODO: andExpect status 201
-        // TODO: andExpect jsonPath("$.info") contiene "creado" o similar
-        // TODO: andExpect jsonPath("$.response.user.username") == "juan4_dev"
-        // TODO: andExpect jsonPath("$.response.user.status") == "ACTIVE"
+        mockMvc.perform(
+                        post("/users")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body)
+                )
+                .andExpect(status().isCreated())                                    // HTTP 201
+                .andExpect(jsonPath("$.info").value("User creado exitosamente"))
+                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
+                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
+                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
+                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
+                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
+                .andExpect(jsonPath("$.response.user.age").value(13))
+                .andExpect(jsonPath("$.response.user.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.response.user.id").isNumber())                // el ID fue generado por la BD
+                .andExpect(jsonPath("$.error").isEmpty());
     }
 
     @Test
