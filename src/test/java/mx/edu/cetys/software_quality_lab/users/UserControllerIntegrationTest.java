@@ -175,10 +175,13 @@ public class UserControllerIntegrationTest {
 
     @Test
     void shouldSuspendUserAndReturn200() throws Exception {
-        // TODO: guardar un usuario ACTIVE via repository
-        // TODO: realizar PATCH /users/{id}/suspend
-        // TODO: andExpect status 200
-        // TODO: andExpect jsonPath("$.response.user.status") == "SUSPENDED"
+
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+        var id = user.getId();
+
+        mockMvc.perform(get("/users/"+id.toString()+"/suspend"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.user.status").value("SUSPENDED"));
     }
 
     @Test
