@@ -104,7 +104,7 @@ public class UserControllerIntegrationTest {
                     "username": "rham",
                     "firstName": "Rhamses",
                     "lastName": "Orozco",
-                    "phone": "6464000031",
+                    "phone": "123456789",
                     "email": "mepic4n#gmil.com",
                     "age": 13,
                     "status": "ACTIVE"
