@@ -1,5 +1,6 @@
 package mx.edu.cetys.software_quality_lab.users;
 
+import mx.edu.cetys.software_quality_lab.pets.Pet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class UserControllerIntegrationTest {
         userRepository.deleteAll();
     }
 
+    // Helper: guardar un user directo en BD para usarlo en pruebas de GET
+    private User guardarUserEnBD(String username, String firstName, String lastName, String phone, String email, Integer age) {
+        return userRepository.save(new User(username, firstName, lastName, phone, email, age));
+
+    }
+
     // ─── POST /users ──────────────────────────────────────────────────────────
 
     @Test
@@ -34,86 +41,175 @@ public class UserControllerIntegrationTest {
         // El email sigue el formato del EmailValidatorService: usuario#proveedor.dominio
         String body = """
                 {
-                    "username": "juan4_dev",
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "phone": "6641234567",
-                    "email": "juan4#gmail.com",
-                    "age": 25
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
                 }""";
 
-        // TODO: realizar POST /users con el body anterior
-        // TODO: andExpect status 201
-        // TODO: andExpect jsonPath("$.info") contiene "creado" o similar
-        // TODO: andExpect jsonPath("$.response.user.username") == "juan4_dev"
-        // TODO: andExpect jsonPath("$.response.user.status") == "ACTIVE"
+        mockMvc.perform(
+                        post("/users")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body)
+                )
+                    .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.info").value("User creado exitosamente"))
+                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
+                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
+                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
+                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
+                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
+                .andExpect(jsonPath("$.response.user.age").value(13))
+                .andExpect(jsonPath("$.response.user.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.response.user.id").isNumber())                // el ID fue generado por la BD
+                .andExpect(jsonPath("$.error").isEmpty());
     }
 
     @Test
     void shouldReturn400WhenUsernameIsTooShort() throws Exception {
-        // TODO: body con username de 4 caracteres
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rham",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
     void shouldReturn400WhenAgeIsExactlyTwelve() throws Exception {
-        // TODO: body con age = 12 (caso límite — debe ser mayor a 12)
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 12,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
     void shouldReturn400WhenPhoneIsInvalid() throws Exception {
-        // TODO: body con phone = "123" (menos de 10 dígitos)
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "123456789",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
     void shouldReturn400WhenEmailIsInvalid() throws Exception {
-        // TODO: body con email en formato estándar "user@gmail.com" (no cumple las reglas del validador)
-        // TODO: realizar POST /users
-        // TODO: andExpect status 400
+        String body = """
+                {
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())                                 // HTTP 400
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     @Test
     void shouldReturn409WhenUsernameIsDuplicated() throws Exception {
-        // TODO: guardar un usuario directamente via repository con el mismo username
-        // TODO: realizar segundo POST /users con el mismo username
-        // TODO: andExpect status 409
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+
+        String body = """
+                {
+                    "username": "rhamses_noob67",
+                    "firstName": "Rhamses",
+                    "lastName": "Orozco",
+                    "phone": "6464000031",
+                    "email": "mepic4n#gmil.com",
+                    "age": 13,
+                    "status": "ACTIVE"
+                }""";
+
+        mockMvc.perform(
+                        post("/users")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body)
+                )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.info").value("Duplicate user"))
+                .andExpect(jsonPath("$.error").isEmpty());
     }
 
     // ─── GET /users/{id} ─────────────────────────────────────────────────────
 
     @Test
     void shouldReturn200AndUserWhenFound() throws Exception {
-        // TODO: guardar un usuario via repository, obtener su id generado
-        // TODO: realizar GET /users/{id}
-        // TODO: andExpect status 200
-        // TODO: andExpect jsonPath campos coincidan con el usuario guardado
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+
+        mockMvc.perform(get("/users/" + user.getId()))
+                .andExpect(status().isOk())                                         // HTTP 200
+                .andExpect(jsonPath("$.response.user.username").value("rhamses_noob67"))
+                .andExpect(jsonPath("$.response.user.firstName").value("Rhamses"))
+                .andExpect(jsonPath("$.response.user.lastName").value("Orozco"))
+                .andExpect(jsonPath("$.response.user.phone").value("6464000031"))
+                .andExpect(jsonPath("$.response.user.email").value("mepic4n#gmil.com"))
+                .andExpect(jsonPath("$.response.user.age").value(13))
+                .andExpect(jsonPath("$.response.user.id").value(user.getId()));
     }
 
     @Test
     void shouldReturn404WhenUserNotFound() throws Exception {
-        // TODO: realizar GET /users/9999 (id inexistente)
-        // TODO: andExpect status 404
+        mockMvc.perform(get("/users/9999"))
+                .andExpect(status().isNotFound())                                   // HTTP 404
+                .andExpect(jsonPath("$.error").isNotEmpty());
     }
 
     // ─── PATCH /users/{id}/suspend ────────────────────────────────────────────
 
     @Test
     void shouldSuspendUserAndReturn200() throws Exception {
-        // TODO: guardar un usuario ACTIVE via repository
-        // TODO: realizar PATCH /users/{id}/suspend
-        // TODO: andExpect status 200
-        // TODO: andExpect jsonPath("$.response.user.status") == "SUSPENDED"
+
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+        var id = user.getId();
+
+        mockMvc.perform(patch("/users/"+id.toString()+"/suspend"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.user.status").value("SUSPENDED"));
     }
 
     @Test
     void shouldReturn400WhenSuspendingAlreadySuspendedUser() throws Exception {
-        // TODO: guardar un usuario con status SUSPENDED via repository
-        // TODO: realizar PATCH /users/{id}/suspend
-        // TODO: andExpect status 400
+        var user = guardarUserEnBD("rhamses_noob67", "Rhamses", "Orozco", "6464000031", "mepic4n#gmil.com", 13);
+        var id = user.getId();
+        user.setStatus(UserStatus.SUSPENDED);
+        userRepository.save(user);
+
+        mockMvc.perform(patch("/users/" + id + "/suspend"))
+                .andExpect(status().isBadRequest());
     }
 }

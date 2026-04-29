@@ -1,6 +1,7 @@
 package mx.edu.cetys.software_quality_lab.users;
 
 import mx.edu.cetys.software_quality_lab.commons.ApiResponse;
+import mx.edu.cetys.software_quality_lab.pets.PetController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,8 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // HTTP 201: recurso creado exitosamente
     ApiResponse<UserWrapper> registerUser(@RequestBody UserRequest request) {
-        // TODO: llamar a userService.registerUser, envolver en ApiResponse y regresar
-        throw new UnsupportedOperationException("TODO: implementar endpoint registerUser");
+        var savedUser = userService.registerUser(request);
+        return new ApiResponse<>("User creado exitosamente", new UserController.UserWrapper(savedUser), null);
     }
 
     // GET /users/{id} — obtener un usuario por ID
@@ -32,16 +33,15 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK) // HTTP 200: solicitud exitosa
     ApiResponse<UserWrapper> getUserById(@PathVariable Long id) { 
 
-        var savedUser = userService.getUserById(id);
-
-        throw new UnsupportedOperationException("TODO: implementar endpoint getUserById");
+        var user = userService.getUserById(id);
+        return new ApiResponse<>("User encontrado", new UserController.UserWrapper(user), null);
     }
 
     // PATCH /users/{id}/suspend — suspender un usuario activo
     @PatchMapping("/{id}/suspend")
     @ResponseStatus(HttpStatus.OK)
     ApiResponse<UserWrapper> suspendUser(@PathVariable Long id) {
-        // TODO: llamar a userService.suspendUser, envolver en ApiResponse y regresar
-        throw new UnsupportedOperationException("TODO: implementar endpoint suspendUser");
+        var user = userService.suspendUser(id);
+        return new ApiResponse<>("User suspendido", new UserController.UserWrapper(user), null);
     }
 }
