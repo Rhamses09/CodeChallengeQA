@@ -35,6 +35,11 @@
 | Line coverage | 81 |
 | Branch coverage | 85 |
 
+| Métrica | Resultado |
+|---|---|
+| Line coverage | 88% |
+| Branch coverage | 100% |
+
 ---
 
 ## Challenge Extra — Módulo `petstore`
@@ -47,5 +52,5 @@
 
 | Métrica | Resultado |
 |---|---|
-| Line coverage | 88% |
-| Branch coverage | 100% |
+| Line coverage |  |
+| Branch coverage |  |
